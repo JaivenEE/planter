@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tree Order Form</title>
+</head>
+<body>
+        <div class="flex items-center h-screen w-full bg-orange-100">
+      <div class="w-full bg-white rounded shadow-lg p-8 m-4 md:max-w-sm md:mx-auto">
+        <h1 class="block w-full text-center text-grey-darkest mb-6">planter.ee</h1>
+        
+    </div>
+  </div>
+  <form id="form">
+    <label for="num-trees">Number of Trees:</label>
+    <input type="number" id="num-trees" name="num-trees" required><br>
+    <label for="tree-type">Tree Type:</label>
+    <select id="tree-type" name="tree-type" required>
+        <option value="Pine">Pine</option>
+        <option value="Birch">Birch</option>
+        <option value="Spruce">Spruce</option>
+        <option value="Aspen">Aspen</option>
+        <!-- Add more tree types here as needed -->
+    </select><br>
+    <label for="location">Location:</label>
+    <select id="location" name="location" required>
+        <option value="">Select a city</option>
+        <option value="Tallinn">Tallinn</option>
+        <option value="Tartu">Tartu</option>
+        <option value="Parnu">Parnu</option>
+        <option value="Viljandi" selected>Viljandi</option>
+        <!-- Add more cities here as needed -->
+    </select><br>
+    <label for="name">Name</label>
+    <input type="text" id="Name" name="Name" required><br>
+    <label for="email">Email Address:</label>
+    <input type="email" id="email" name="email" required><br><br>
+    <button type="button" onclick="generatePaymentInstructions()">Payment Instructions</button>
+    <div id="payment-instructions" class="payment-instructions"></div>
+</body>
+<script>
+  function generatePaymentInstructions() {
+      // Get form values
+      var numTrees = document.getElementById("num-trees").value;
+      var treeType = document.getElementById("tree-type").value;
+      var location = document.getElementById("location").value;
+      var customerName = document.getElementById("Name").value;
+      var email = document.getElementById("email").value;
+
+      // Generate reference number from date and first 3 letters of customer's name
+      var currentDate = new Date();
+      var referenceNumber = currentDate.getFullYear().toString() +
+          (currentDate.getMonth() + 1).toString().padStart(2, '0') +
+          currentDate.getDate().toString().padStart(2, '0') +
+          customerName.substr(0, 3).toUpperCase();
+
+      // Display payment instructions with reference number
+      var paymentInstructionsDiv = document.getElementById("payment-instructions");
+      paymentInstructionsDiv.innerHTML = "Pay to this account: <strong>1234567890</strong><br>" +
+          "Reference Number: <strong>" + referenceNumber + "</strong><br>" +
+          "text<br><br>" +
+          "<button type='submit' id='submit'>Submit Order</button>";
+      paymentInstructionsDiv.style.display = "block";
+
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbydM2PwqvSYZbtBKY229OYwQHhmLa4a6gxpsuhc8qejFn3vc8G6tNdDhY64RTP7crZu3A/exec'
+    const form = document.querySelector('#form')
+    const btn = document.querySelector('#submit')
+
+    form.addEventListener('submit', e => {
+      e.preventDefault()
+      btn.disabled = true
+      btn.innerHTML = "Loading..."
+
+      console.log(form)
+      fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+        .then(response => { 
+              btn.disabled = false
+      btn.innerHTML = "Submit"
+            alert('Success!', response) })
+        .catch(error => {
+                     btn.disabled = false
+      btn.innerHTML = "Submit"
+            alert('Error!', error.message)})
+    })
+  }
+</script>
+</html>
